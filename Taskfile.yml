@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  serve:
+    dir: '{{.USER_WORKING_DIR}}/docs'
+    cmds:
+      - bundle exec jekyll serve --baseurl=""
