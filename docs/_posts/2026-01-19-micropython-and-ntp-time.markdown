@@ -1,11 +1,12 @@
 
 # Rasapberry Pi Pico and NTP
 
-Whenever I have time I like to work on a little side project of mine. A small alarmclock that I build from scratch to learn about electronics and microcontrollers. I've come quite far so far. My last commitment has been to retrieve time from an NTP server and automatically adjust the time with the correct timezones. 
+Whenever I have time I like to work on a little side project of mine. A small alarmclock that I build from scratch to learn about electronics and microcontrollers. One of the problems I had to solve was time retrieval, specifically retrieving time from an NTP server. The requirements are as follows:
 
-One of the things I really have enjoyed with this project is the mix of high level programming and low level programming. Since I am using micropython to program the Raspberry Pi pico I have lots of built-in abstractions ready at my hands. But for this particular task I had to dive a bit into the less shallow part of the pool and explore how time is retrieved from NTP.
+1. Allow the alarmclock to sync its RTC clock with an NTP time source
+2. Automatically adjust for day light time savings (CET+1 and CEST+2)
 
-Since I will be eventually be using my alarmclock as a daily driver and considering the fact that I live in Sweden, I want it to be able to adjust itself for daylight saving time adjustment. In this case CET+1 (aka. winter time) and CEST+2 (aka. summertime).
+One of the things I really have enjoyed with this project is the mix of high level programming and low level programming. Although I am using micropython to program the Raspberry Pi pico which has lots of nice features and built-in abstractions. But for this particular task I had to dive a bit into the nitty gritty details of NTP.
 
 # The code
 
@@ -182,3 +183,44 @@ if __name__ == "__main__":
 	print("after summertime adjustment")
 	print(now.current_time)
 ```
+
+I have defined a class which fetches time whenever its instantiated. The current time is saved as an 8-tuple and in memory with the `self.current_time` attribute. I added lots of getter methods to the `Ntp` class which allow me to quickly retrieve different parts of this 8-tuple (year, month, day etc.).
+
+## Daylight timesavings
+
+To adjust for daylight time savings I implemented a bunch of internal/private methods to determine wether or not `self.current_time` falls between the last sunday in march and the last sunday in october (in other words summertime, a.k.a CEST+2). 
+
+The first method `_is_sunday()` constructs checks wether or not a given timestamp actually is a sunday (the 6th week day). This method is used by both `_last_sunday_in_march()` and `_last_sunday_in_october()` when they loop through all the last weekdays in both these months respectively to determine which one of them is a sunday. When a sunday is found, an epoch timestamp is constructed with the `_sunday()` method for that particular sunday.
+
+## NTP time retrieval
+
+As for fetching the time itself, the `fetch_current_time()` method is used. It does the following:
+
+1. First a NTP request is constructed and a delta is defined. This is a 48-byte packet sent to the NTP server on port 123.
+2. A network socket is defined with details about the remote NTP server, this is used to send/write the packet onto and read the response from.
+3. Once the response is received, it is transformed from a so called "Transmit timestamp" into a UNIX timestamp.
+4. The UNIX_TIMESTAMP is returned and because its in epoch format, the built-in `time` library understands it and we can use `time.gmtime()` to convert that into the 8-tuple I mentioned earlier.
+
+To demonstrate lets run the code within the if clause at the end.
+
+```
+~/Documents/projects/wake-up-alarm$ mpremote run ntp.py
+Response recieved: b'\x1c\x03\x00\xe6\x00\x00\x00J\x00\x00\x00\x10\nA\x08\x84\xed,\xcb\xb6]\x12S\xc3\x00\x00\x00\x00\x00\x00\x00\x00\xed,\xcc\x04V-KY\xed,\xcc\x04V2\xc7\xa6'
+Transmit timestamp: 3979136004
+UNIX timestamp recieved from NTP:  1770147204
+8-tuple format:  (2026, 2, 3, 19, 33, 24, 1, 34)
+timestamp after timezone adjustment (winter time)
+(2026, 2, 3, 20, 33, 24, 1, 34)
+adjust timestamp to timestamp (summertime)
+before summertime adjustment
+(2025, 7, 22, 19, 41, 25, 1, 203)
+after summertime adjustment
+(2025, 7, 22, 21, 41, 25, 1, 203)
+```
+
+# Conclusion
+
+I now have a small class that allows me to retrieve the time from a remote NTP server. The class itself makes formatting time really easy since it allows me to quickly access different parts of the timestamp (year, month, day etc.). While my alarmclock only renders hours and minutes, it still needs to be aware of the time as a whole, which is possible by syncing the timestamp to the Raspberry Pi Pico internal RTC battery clock. Syncing the received timestamp can easily be accomplished via the builtin [`RTC.datetime()`](https://docs.micropython.org/en/latest/library/machine.RTC.html) method which expects a 8-tuple format.
+
+
+And now I will hopefully never be late again. Thanks for reading my first ever post!
