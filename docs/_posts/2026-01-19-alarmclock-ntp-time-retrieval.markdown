@@ -88,7 +88,7 @@ class Ntp():
         ))
 
 	"""
-		_last_sunday_in_march returns the current year's last sunday in March as a Datetime object
+		_last_sunday_in_march returns the current year's last sunday in March as a 8-tuple datetime object
 	"""
 	def _last_sunday_in_march(self) -> int:
 		# Loop trough the last week in march and find sunday
@@ -101,7 +101,7 @@ class Ntp():
 		return 0
 
 	"""
-		_last_sunday_in_march returns the current year's last sunday in October as a Datetime object
+		_last_sunday_in_march returns the current year's last sunday in October as a 8-tuple datetime object
 	"""
 	def _last_sunday_in_october(self) -> int:
 		# Loop trough the last week in october and find sunday
