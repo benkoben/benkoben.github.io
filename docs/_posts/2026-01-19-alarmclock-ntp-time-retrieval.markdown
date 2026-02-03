@@ -1,5 +1,5 @@
 
-# Rasapberry Pi Pico and NTP
+# Retrieving NTP time on a Raspberry Pi Pico
 
 Whenever I have time I like to work on a little side project of mine. A small alarmclock that I build from scratch to learn about electronics and microcontrollers. One of the problems I had to solve was time retrieval, specifically retrieving time from an NTP server. The requirements are as follows:
 
