@@ -217,6 +217,8 @@ after summertime adjustment
 (2025, 7, 22, 21, 41, 25, 1, 203)
 ```
 
+> I used a hardcoded value to test the summertime adjustments, hence the different years.
+
 # Conclusion
 
 I now have a small class that allows me to retrieve the time from a remote NTP server. The class itself makes formatting time really easy since it allows me to quickly access different parts of the timestamp (year, month, day etc.). While my alarmclock only renders hours and minutes, it still needs to be aware of the time as a whole, which is possible by syncing the timestamp to the Raspberry Pi Pico internal RTC battery clock. Syncing the received timestamp can easily be accomplished via the builtin [`RTC.datetime()`](https://docs.micropython.org/en/latest/library/machine.RTC.html) method which expects a 8-tuple format.
