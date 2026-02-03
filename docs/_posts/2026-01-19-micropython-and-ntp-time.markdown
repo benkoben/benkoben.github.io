@@ -84,7 +84,7 @@ class Ntp():
 			0, # minute
 			0, # seconds
 			6, # weekday
-			yearday, # TODO: I need to figure out the yearday of this particular sunday
+			yearday,
         ))
 
 	"""
