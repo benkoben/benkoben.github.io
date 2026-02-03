@@ -189,7 +189,7 @@ I have defined a class which fetches time whenever its instantiated. The current
 
 To adjust for daylight time savings I implemented a bunch of internal/private methods to determine wether or not `self.current_time` falls between the last sunday in march and the last sunday in october (in other words summertime, a.k.a CEST+2). 
 
-The first method `_is_sunday()` constructs checks wether or not a given timestamp actually is a sunday (the 6th week day). This method is used by both `_last_sunday_in_march()` and `_last_sunday_in_october()` when they loop through all the last weekdays in both these months respectively to determine which one of them is a sunday. When a sunday is found, an epoch timestamp is constructed with the `_sunday()` method for that particular sunday.
+The first method `_is_sunday()` checks wether or not a given timestamp actually is a sunday (the 6th week day). This method is used by both `_last_sunday_in_march()` and `_last_sunday_in_october()` when they loop through all the last weekdays in both these months respectively to determine which one of them is a sunday. When a sunday is found, an epoch timestamp is constructed with the `_sunday()` method for that particular sunday.
 
 ## NTP time retrieval
 
