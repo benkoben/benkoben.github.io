@@ -146,7 +146,6 @@ class Ntp():
 			# The response is also a 48 byte packet where the last 8 bytes contain the "transmit timestamp"
 			transmit_timestamp = struct.unpack("!I", msg[40:44])[0]
 
-			# TODO: what does the transmit timestmap mean?
 			print(f"Transmit timestamp: {transmit_timestamp}")
 			UNIX_TIME = transmit_timestamp - NTP_DELTA
 
