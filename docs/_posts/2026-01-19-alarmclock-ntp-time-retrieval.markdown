@@ -34,6 +34,7 @@ class Ntp():
 		self.current_time = time.gmtime(
 			self.fetch_current_time(host)
         )
+        self.adjust_for_daylight_savings() 
 		
 	def year(self):
         #     year includes the century (for example 2014).
